@@ -15,7 +15,7 @@ keep_cols = ['Amount','Category','Description']
 
 def get_recent_file(bank):
     file_list = list()
-    file_folder = '/Users/blattier/Downloads'
+    file_folder = '/Users/blakelattier/Downloads'
     for path, dirname, fname in os.walk(file_folder):
         for n in fname:
             if n.startswith(banks[bank]) and n.lower().endswith('.csv'):
@@ -42,7 +42,7 @@ run_boa = args.boa
 final_transactions = pd.DataFrame(data=None, columns=keep_cols)
 if run_amex == 'Run':
     new_download = get_recent_file('amex')
-    transactions = pd.read_csv(os.path.join('/Users/blattier/Downloads',new_download))
+    transactions = pd.read_csv(os.path.join('/Users/blakelattier/Downloads',new_download))
     transactions['Category'] = 'Null'
     transactions['Description'] = transactions['Description'] + '-AMEX'
     amex_transactions = transactions[keep_cols]
@@ -51,7 +51,7 @@ if run_amex == 'Run':
 
 if run_chase == 'Run':
     new_download = get_recent_file('chase')
-    transactions = pd.read_csv(os.path.join('/Users/blattier/Downloads',new_download))
+    transactions = pd.read_csv(os.path.join('/Users/blakelattier/Downloads',new_download))
     transactions['Description'] = transactions['Description'] + '-CHASE'
     transactions['Amount'] = transactions['Amount'] * -1
     chase_transactions = transactions[keep_cols]
@@ -59,7 +59,7 @@ if run_chase == 'Run':
 
 if run_boa == 'Run':
     new_download = get_recent_file('boa')
-    transactions = pd.read_csv(os.path.join('/Users/blattier/Downloads',new_download))
+    transactions = pd.read_csv(os.path.join('/Users/blakelattier/Downloads',new_download))
     transactions['Category'] = 'Null'
     transactions['Description'] = transactions['Description'] + '-BOA'
     boa_transactions = transactions[keep_cols]
@@ -74,7 +74,7 @@ for index, row in final_transactions.iterrows():
 
 service_file = os.path.join(os.getcwd(), 'gsuite_key.json')
 gc = pygsheets.authorize(service_account_file=service_file) # authorize worksheet connection
-worksheet = '1wRhcjRYtI158r-AlinjsyxthnkhkQ9HxlYgr6FKiyuc'
+worksheet = '1SQt8c8TJ33mCht1ITAlixAhP6RSJO5u7RyLeG575Tjg'
 budget_sheet = gc.open_by_key(worksheet) # connect to the worksheet
 inputs_sheet = budget_sheet.worksheet_by_title('Expense Inputs')
 

@@ -1,11 +1,11 @@
 import pygsheets
-from googleapiclient import discovery
+#from googleapiclient import discovery
 import os
 import datetime
 import calendar
 import logging
 import pandas as pd
-from schedule import every, repeat, run_pending
+#from schedule import every, repeat, run_pending
 import time
 
 #* Set up logger
@@ -24,7 +24,7 @@ if datetime.date.today().month == 12:
 else:
     next_month_year = str(datetime.date.today().month + 1) + '-' + str(datetime.date.today().year)
 current_day = str(datetime.date.today().day)
-worksheet = '1wRhcjRYtI158r-AlinjsyxthnkhkQ9HxlYgr6FKiyuc'
+worksheet = '1SQt8c8TJ33mCht1ITAlixAhP6RSJO5u7RyLeG575Tjg'
 days_in_month = calendar.monthrange(pd.to_datetime('now').year,
                                     pd.to_datetime('now').month)[1]
 
@@ -90,17 +90,24 @@ def create_new_month():
     reload.worksheet_by_title(next_month_year).clear(start = 'J15', end = 'P115')
 
     
+run_expense_update()
+logger.info('All finished! Expenses updated!')
 
-@repeat(every(30).minutes)
-def main():
-    run_expense_update()
-    logger.info('All finished! Expenses updated!')
+if current_day == days_in_month - 1:
+    create_new_month()
+    logger.info('Created New Month Tab')
+
+
+# @repeat(every(30).minutes)
+# def main():
+#     run_expense_update()
+#     logger.info('All finished! Expenses updated!')
     
-    if current_day == days_in_month - 1:
-        create_new_month()
-        logger.info('Created New Month Tab')
+#     if current_day == days_in_month - 1:
+#         create_new_month()
+#         logger.info('Created New Month Tab')
 
-if __name__ == "__main__":
-    while True:
-        run_pending()
-        time.sleep(1)
+# if __name__ == "__main__":
+#     while True:
+#         run_pending()
+#         time.sleep(1)
