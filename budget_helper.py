@@ -73,7 +73,7 @@ def clear_interface(tab_name):
     expenses = budget_sheet.worksheet_by_title(tab_name)
     not_ready = expenses.get_as_df(start = 'A1', end = '*')
     not_ready = not_ready.loc[not_ready['Ready'] != 'TRUE']
-    not_ready = not_ready[['Amount','Category','Description']]
+    not_ready = not_ready[['Date','Amount','Category','Description']]
     expenses.clear(start = 'A2')
     expenses.set_dataframe(not_ready, start = 'A1')
     logger.info('Expenses Cleared')
