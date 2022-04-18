@@ -4,14 +4,13 @@ import pygsheets
 import subprocess
 import argparse
 
-
 #* Set up universal variables
 banks = {
         'amex' : 'activity',
         'chase' : 'Chase',
         'boa' : 'stmt'
 }
-keep_cols = ['Amount','Category','Description']
+keep_cols = ['Date','Amount','Category','Description']
 
 def get_recent_file(bank):
     file_list = list()
@@ -54,6 +53,7 @@ if run_chase == 'Run':
     transactions = pd.read_csv(os.path.join('/Users/blakelattier/Downloads',new_download))
     transactions['Description'] = transactions['Description'] + '-CHASE'
     transactions['Amount'] = transactions['Amount'] * -1
+    transactions.rename(columns={'Post Date': 'Date'}, inplace=True)
     chase_transactions = transactions[keep_cols]
     final_transactions = pd.concat([final_transactions,chase_transactions], ignore_index=True)
 

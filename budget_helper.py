@@ -7,6 +7,7 @@ import logging
 import pandas as pd
 #from schedule import every, repeat, run_pending
 import time
+import pdb
 
 #* Set up logger
 logger = logging.getLogger(__name__)
@@ -43,10 +44,12 @@ except:
 def retrieve_expenses(tab_name):
     expenses_tab = budget_sheet.worksheet_by_title(tab_name)
     expense_df = expenses_tab.get_as_df(start = 'A1', end = '*')
-    expense_df['Date'] = current_day
+    pd.to_datetime(expense_df['Date']).dt.day
     expense_df = expense_df.loc[expense_df['Ready'] == 'TRUE']
     col_order = ['Date','Amount', 'Category','Description']
-    return expense_df[col_order]
+    expense_df = expense_df[col_order]
+    expense_df.reset_index()
+    return expense_df
 
 #* Record expenses to the correct month tab 
 def record_expenses(expense_df, tab_name):
@@ -85,9 +88,9 @@ def run_expense_update():
 def create_new_month():
     source_sheet = budget_sheet.id
     curr_tab = budget_sheet.worksheet_by_title(current_month_year).id
-    budget_sheet.add_worksheet(title = next_month_year, rows = 115, src_tuple=(source_sheet, curr_tab))
+    budget_sheet.add_worksheet(title = next_month_year, rows = 150, src_tuple=(source_sheet, curr_tab))
     reload = gc.open_by_key(worksheet)
-    reload.worksheet_by_title(next_month_year).clear(start = 'J15', end = 'P115')
+    reload.worksheet_by_title(next_month_year).clear(start = 'J15', end = 'P150')
 
     
 run_expense_update()
