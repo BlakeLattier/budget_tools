@@ -3,6 +3,7 @@ import os
 import pygsheets
 import subprocess
 import argparse
+import csv
 
 #* Set up universal variables
 banks = {
@@ -19,7 +20,7 @@ def get_recent_file(bank):
         for n in fname:
             if n.startswith(banks[bank]) and n.lower().endswith('.csv'):
                 file_list.append([n, os.path.getmtime(os.path.join(file_folder,n))])
-    file_df = pd.DataFrame(data = file_list, columns = ['Name','Date'])
+    file_df = pd.DataFrame(data = file_list, columns = ['Name','Date'])    
     file_df['Date'] = pd.to_datetime(file_df['Date'], unit='s')
     file_df = file_df.sort_values('Date', ascending=False)
     file_name = file_df.iloc[0,0]
@@ -59,11 +60,18 @@ if run_chase == 'Run':
 
 if run_boa == 'Run':
     new_download = get_recent_file('boa')
-    transactions = pd.read_csv(os.path.join('/Users/blakelattier/Downloads',new_download))
+    transactions = '/Users/blakelattier/Downloads/'+new_download
+    list_df = []
+    with open(transactions, 'r') as file:
+        for line in csv.reader(file):
+            if len(line) == 4:
+                list_df.append(line)
+
+    transactions = pd.DataFrame(list_df[1:], columns=list_df[0])
     transactions['Category'] = 'Null'
     transactions['Description'] = transactions['Description'] + '-BOA'
     boa_transactions = transactions[keep_cols]
-    #TODO finish this processing
+    final_transactions = pd.concat([final_transactions,boa_transactions], ignore_index=True)
 
 
 
@@ -74,7 +82,7 @@ for index, row in final_transactions.iterrows():
 
 service_file = os.path.join(os.getcwd(), 'gsuite_key.json')
 gc = pygsheets.authorize(service_account_file=service_file) # authorize worksheet connection
-worksheet = '1SQt8c8TJ33mCht1ITAlixAhP6RSJO5u7RyLeG575Tjg'
+worksheet = '1FkYrUYzrNlNVZI7DvoL3pW6N_uC6zzO4VLpMPnU1mbg'
 budget_sheet = gc.open_by_key(worksheet) # connect to the worksheet
 inputs_sheet = budget_sheet.worksheet_by_title('Expense Inputs')
 
